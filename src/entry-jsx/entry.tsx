@@ -61,7 +61,6 @@ const SceneContext = createContext<string | null>(null)
 const ObjectContext = createContext<EntryObjectType | null>(null)
 const ScriptContext = createContext<ScriptType[][] | null>(null)
 const ParamsContext = createContext<any[] | null>(null)
-const StatementContext = createContext<ScriptType[] | null>(null)
 
 /**
  * 작품에 대한 정보를 정의할 때 사용되는 컴포넌트입니다. 이 컴포넌트는 `jsxToProject()` 함수의 매개변수에 사용해야 합니다.
