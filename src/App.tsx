@@ -4,7 +4,19 @@ import "./index.css";
 
 import logo from "./logo.svg";
 import reactLogo from "./react.svg";
-import { EntryObject, jsxToProject, Param, Project, Scene, Script, Statement, Variable, VariableId } from './entry-jsx';
+import {
+  EntryObject,
+  jsxToProject,
+  Param,
+  Picture,
+  Project,
+  Scene,
+  Script,
+  Sound,
+  Statement,
+  Variable,
+  VariableParam,
+} from './entry-jsx';
 
 export function App() {
   return (
@@ -39,17 +51,65 @@ export function App() {
 
 export default App;
 
+function GetVariable({ name }: { name: string }) {
+  return (
+    <Script type='get_variable'>
+      <VariableParam name={name} />
+    </Script>
+  )
+}
+
 console.log(JSON.stringify(jsxToProject(
   <Project name='250906_aqu3180 작품'>
     <Scene name='장면 1'>
-      <EntryObject name='엔트리봇'>
-        <Variable name='hello' value='world' />
+      <EntryObject
+        name='엔트리봇'
+        x={0}
+        y={0}
+        width={144}
+        height={246}
+        scaleX={20 / 39}
+        scaleY={20 / 39}
+        visible
+      >
+        <Picture
+          name='엔트리봇_걷기1'
+          fileurl='/lib/entry-js/images/media/entrybot1.svg'
+          imageType='svg'
+          width={144}
+          height={246}
+          selected
+        />
+        <Picture
+          name='엔트리봇_걷기2'
+          fileurl='/lib/entry-js/images/media/entrybot2.svg'
+          imageType='svg'
+          width={144}
+          height={246}
+        />
+
+        <Sound
+          name='강아지 짖는 소리'
+          fileurl='/lib/entry-js/images/media/bark.mp3'
+          duration={1.3}
+          ext='.mp3'
+        />
+
+        <Variable name='개인변수' value={10} />
+
         <Statement>
-          <Script type='when_some_key_pressed'>
+          <Script type='when_run_button_click' />
+          <Script type='repeat_basic'>
+            <Script type='number'>
+              <Param value='10' />
+            </Script>
             <Param />
-            <Param>
-              <VariableId name='hello' />
-            </Param>
+
+            <Statement>
+              <Script type='move_direction'>
+                <GetVariable name='개인변수' />
+              </Script>
+            </Statement>
           </Script>
         </Statement>
       </EntryObject>

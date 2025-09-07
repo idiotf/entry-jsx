@@ -18,12 +18,20 @@ export interface ProjectType {
   externalModulesLite: string[]
 }
 
+export type ObjectType = 'sprite' | 'textBox'
+export type RotateMethod = 'free' | 'vertical' | 'none'
+
 export interface EntryObjectType {
   id: string
   name: string
+  lock: boolean
   scene: string
   script: string
   selectedPictureId: string | null
+  sprite: SpriteType
+  entity: EntityType
+  objectType: ObjectType
+  rotateMethod: RotateMethod
 }
 
 export interface SceneType {
@@ -34,7 +42,7 @@ export interface SceneType {
 export interface VariableType {
   id: string
   name: string
-  value: unknown
+  value: any
   visible: boolean
   x: number
   y: number
@@ -49,9 +57,11 @@ export interface MessageType {
   name: string
 }
 
+export type FunctionType = 'normal' | 'value'
+
 export interface EntryFunctionType {
   id: string
-  type: 'normal' | 'value'
+  type: FunctionType
   useLocalVariables: boolean
   localVariables?: LocalVariableType[]
   content: string
@@ -65,7 +75,12 @@ export interface TableType {}
 export interface LocalVariableType {
   id: string
   name: string
-  value: unknown
+  value: any
+}
+
+export interface SpriteType {
+  pictures: PictureType[]
+  sounds: SoundType[]
 }
 
 export interface EntityType {
@@ -86,7 +101,7 @@ export interface EntityType {
 export interface ScriptType {
   id: string
   type: string
-  params: unknown[]
+  params: any[]
   statements: ScriptType[][]
   x: number
   y: number
@@ -99,10 +114,31 @@ export interface ScriptType {
   extensions: string[]
 }
 
+export interface PictureType {
+  id: string
+  name: string
+  fileurl: string
+  thumbUrl: string
+  imageType: string
+  dimension: DimensionType
+}
+
+export interface SoundType {
+  id: string
+  name: string
+  fileurl: string
+  duration: number
+  ext: string
+}
+
+export interface DimensionType {
+  width: number
+  height: number
+}
 
 /**
  * JSX를 Project 객체로 변환해 줍니다.
- * @param children JSX로 만들어진 `<Project>` 컴포넌트
+ * @param children JSX로 만들어진 동기적인 `<Project>` 컴포넌트
  * @returns JSX에서 Project로 변환된 객체
  */
 export function jsxToProject(children: React.ReactNode) {
@@ -116,7 +152,24 @@ export function jsxToProject(children: React.ReactNode) {
     </DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT>
   )
 
+  // getter에서 발생하는 오류를 테스트합니다.
+  JSON.stringify(project)
+
   return project as ProjectType
 }
 
-export { Project, Scene, EntryObject, Statement, Script, Param, Variable, VariableId } from './entry'
+export {
+  Project,
+  Scene,
+  EntryObject,
+  Statement,
+  Script,
+  Param,
+  ObjectParam,
+  Variable,
+  VariableParam,
+  Picture,
+  PictureParam,
+  Sound,
+  SoundParam,
+} from './entry'

@@ -1,9 +1,19 @@
-import { Children, createContext, isValidElement, use, useRef } from 'react'
-import type { EntryObjectType, ProjectType, ScriptType, VariableType } from '.'
+import { createContext, use, useRef } from 'react'
+import type {
+  EntryObjectType,
+  ObjectType,
+  PictureType,
+  ProjectType,
+  RotateMethod,
+  ScriptType,
+  SoundType,
+  VariableType,
+} from '.'
 import generateHash from './hash'
 
 /**
  * 정해진 길이로 만들어진 무작위 id를 리턴하는 hook입니다.
+ * @private
  * @param length 무작위 id의 길이
  * @returns 정해진 길이로 만들어진 무작위 id
  */
@@ -13,7 +23,35 @@ function useEntryId(length = 4) {
 }
 
 /**
- * 이 컴포넌트는 jsxToProject() 내부 구현을 위해서만 사용됩니다. 이 컴포넌트를 직접 사용하지 마세요.
+ * 배열마다 중복 값이 들어가는 것을 방지하기 위한 `WeakMap`입니다.
+ * @private
+ */
+const paramsMap = new WeakMap<any[], symbol[]>()
+
+/**
+ * 배열에 특정 항목을 중복 없이 넣어주는 hook입니다.
+ * @private
+ * @param params 매개변수가 들어갈 배열
+ * @param param 배열에 들어갈 값의 descriptor
+ */
+function useParam(params: any[], param: PropertyDescriptor & ThisType<any>) {
+  const symbol = useRef(Symbol('param')).current
+
+  const paramSymbols = paramsMap.get(params) || []
+  paramsMap.set(params, paramSymbols)
+
+  const i = paramSymbols.indexOf(symbol)
+  if (i >= 0) {
+    params.splice(i, 1)
+    paramSymbols.splice(i, 1)
+  }
+
+  Object.defineProperty(params, params.length, { ...param, configurable: true })
+  paramSymbols.push(symbol)
+}
+
+/**
+ * 이 컨텍스트는 jsxToProject() 내부 구현을 위해서만 사용됩니다. 이 컨텍스트를 직접 사용하지 마세요.
  * @private
  */
 export const DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT = createContext<object | null>(null)
@@ -87,7 +125,9 @@ export function Project({
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
- *       ...
+ *       <EntryObject name='엔트리봇'>
+ *         ...
+ *       </EntryObject>
  *     </Scene>
  *   </Project>
  * )
@@ -99,11 +139,7 @@ export function Scene({ name, children }: React.PropsWithChildren<{
   if (!project) throw TypeError('<Scene> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const id = useEntryId()
-
-  const i = project.scenes.findIndex(v => v.id == id)
-  if (i >= 0) project.scenes.splice(i, 1)
-
-  project.scenes.push({ id, name })
+  useParam(project.scenes, { value: { id, name } })
 
   return (
     <SceneContext value={id}>
@@ -119,14 +155,49 @@ export function Scene({ name, children }: React.PropsWithChildren<{
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
  *       <EntryObject name='엔트리봇'>
- *         ...
+ *         <Statement>
+ *           ...
+ *         </Statement>
  *       </EntryObject>
  *     </Scene>
  *   </Project>
  * )
  */
-export function EntryObject({ name, children }: React.PropsWithChildren<{
+export function EntryObject({
+  name,
+  lock = false,
+  objectType = 'sprite',
+  rotateMethod = 'free',
+  x = 0,
+  y = 0,
+  scaleX = 1,
+  scaleY = 1,
+  rotation = 0,
+  direction = 90,
+  width = 0,
+  height = 0,
+  font = 'undefinedpx ',
+  visible = false,
+  regX = width / 2,
+  regY = height / 2,
+  children,
+}: React.PropsWithChildren<{
   name: string
+  lock?: boolean
+  objectType?: ObjectType
+  rotateMethod?: RotateMethod
+  x?: number
+  y?: number
+  regX?: number
+  regY?: number
+  scaleX?: number
+  scaleY?: number
+  rotation?: number
+  direction?: number
+  width?: number
+  height?: number
+  font?: string
+  visible?: boolean
 }>) {
   const scene = use(SceneContext)
   if (!scene) throw TypeError('<EntryObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
@@ -140,17 +211,30 @@ export function EntryObject({ name, children }: React.PropsWithChildren<{
   const object: EntryObjectType = {
     id,
     name,
+    lock,
     scene,
     get script() {
       return JSON.stringify(script)
     },
+    sprite: {
+      pictures: [],
+      sounds: [],
+    },
+    entity: {
+      x, y,
+      regX, regY,
+      scaleX, scaleY,
+      rotation, direction,
+      width, height,
+      font,
+      visible,
+    },
+    objectType,
+    rotateMethod,
     selectedPictureId: null,
   }
 
-  const i = project.objects.findIndex(v => v.id == id)
-  if (i >= 0) project.objects.splice(i, 1)
-
-  project.objects.push(object)
+  useParam(project.objects, { value: object })
 
   return (
     <ObjectContext value={object}>
@@ -184,17 +268,14 @@ export function Statement({ children }: React.PropsWithChildren) {
   const script = use(ScriptContext)
   if (!script) throw TypeError('<Statement> 컴포넌트는 <Script> 또는 <EntryObject> 내부에서 사용해야 합니다.')
 
-  const statement = useRef<ScriptType[]>([]).current
+  const statement: ScriptType[] = []
 
-  const i = script.indexOf(statement)
-  if (i >= 0) script.splice(i, 1)
-
-  script.push(statement)
+  useParam(script, { value: statement })
 
   return (
-    <StatementContext value={statement}>
+    <ParamsContext value={statement}>
       {children}
-    </StatementContext>
+    </ParamsContext>
   )
 }
 
@@ -226,13 +307,15 @@ export function Script({
   readOnly = null,
   extensions = [],
   children,
-}: React.PropsWithChildren<Partial<Omit<ScriptType, 'type'>> & { type: string }>) {
-  const statement = use(StatementContext)
-  if (!statement) throw TypeError('<Script> 컴포넌트는 <Statement> 내부에서 사용해야 합니다.')
+}: React.PropsWithChildren<Partial<Omit<ScriptType, 'type'>> & {
+  type: string
+}>) {
+  const params = use(ParamsContext)
+  if (!params) throw TypeError('<Script> 컴포넌트는 <Script> 또는 <Statement> 내부에서 사용해야 합니다.')
 
   const id = useEntryId()
 
-  const script = useRef<ScriptType>({
+  const script: ScriptType = {
     id,
     type,
     params: [],
@@ -246,12 +329,9 @@ export function Script({
     movable,
     readOnly,
     extensions,
-  }).current
+  }
 
-  const i = statement.indexOf(script)
-  if (i >= 0) statement.splice(i, 1)
-
-  statement.push(script)
+  useParam(params, { value: script })
 
   return (
     <ScriptContext value={script.statements}>
@@ -262,19 +342,8 @@ export function Script({
   )
 }
 
-const expectedParams: (string | React.JSXElementConstructor<any>)[] = [ Script, VariableId ]
-
-function registerParam(child: React.ReactNode) {
-  if (isValidElement(child)) {
-    if (expectedParams.includes(child.type)) return child
-    else console.warn('<Param> 컴포넌트의 자식으로 <Script>가 아닌 요소가 들어왔습니다. 만약 React.Fragment(<>)을 사용하고 있다면, 대신 자식 요소를 직접 넣어주세요.')
-  }
-
-  return <ParamRegister>{child}</ParamRegister>
-}
-
 /**
- * `<Script>` 컴포넌트 내부에 매개변수를 정의합니다. children이 없는 경우 null이 매개변수로 채워집니다. 이 컴포넌트는 `<Script>`의 자식으로 사용해야 합니다.
+ * `<Script>` 컴포넌트 내부에 일반 매개변수를 정의합니다. children이 없는 경우 null이 매개변수로 채워집니다. 이 컴포넌트는 `<Script>`의 자식으로 사용해야 합니다.
  * @example
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
@@ -283,7 +352,7 @@ function registerParam(child: React.ReactNode) {
  *         <Statement>
  *           <Script type='when_some_key_pressed'>
  *             <Param />
- *             <Param>q</Param>
+ *             <Param value='q' />
  *           </Script>
  *         </Statement>
  *       </EntryObject>
@@ -291,47 +360,50 @@ function registerParam(child: React.ReactNode) {
  *   </Project>
  * )
  */
-export function Param({ children = null }: React.PropsWithChildren) {
+export function Param({ value = null }: {
+  value?: any
+}) {
   const params = use(ParamsContext)
   if (!params) throw TypeError('<Param> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const count = Children.count(children)
-  if (count > 1) throw TypeError('<Param> 컴포넌트에는 한 개 이하의 자식이 필요합니다. 만약 JSX 중괄호 문법({ ... })을 사용하고 있다면, 대신 템플릿 문자열({`${...}`}) 자체를 자식으로 넘겨주세요.')
-
-  return (
-    <StatementContext value={params}>
-      {count ? Children.map(children, registerParam) : <ParamRegister>{null}</ParamRegister>}
-    </StatementContext>
-  )
-}
-
-const paramsMap = new WeakMap<unknown[], symbol[]>()
-
-/**
- * `<Param>`으로 일반 유형의 매개변수를 지정할 때 사용되는 컴포넌트입니다. 이 컴포넌트는 `<StatementContext>`의 자식으로 사용해야 합니다.
- * @private
- */
-function ParamRegister({ children }: React.PropsWithChildren) {
-  const params = use(ParamsContext)
-  if (!params) throw TypeError('<ParamRegister> 컴포넌트는 <ParamsContext> 내부에서 사용해야 합니다. 이는 Entry.jsx 내부 버그입니다.')
-
-  const symbol = useRef(Symbol('param')).current
-
-  const paramSymbols = paramsMap.get(params) || []
-  paramsMap.set(params, paramSymbols)
-
-  const i = paramSymbols.indexOf(symbol)
-  if (i >= 0) {
-    params.splice(i, 1)
-    paramSymbols.splice(i, 1)
-  }
-
-  params.push(children)
-  paramSymbols.push(symbol)
-  
+  useParam(params, { value })
   return null
 }
 
+export function ObjectParam({ name }: {
+  name: string
+}) {
+  const params = use(ParamsContext)
+  if (!params) throw TypeError('<ObjectParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
+
+  const project = use(ProjectContext)
+  if (!project) throw TypeError('<VariableParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
+
+  useParam(params, {
+    get() {
+      const id = project.objects.find(v => v.name == name)?.id
+      if (!id) throw TypeError(`'${name}' 오브젝트를 찾지 못했습니다.`)
+      return id
+    },
+  })
+
+  return null
+}
+
+/**
+ * `<Project>` 또는 `<EntryObject>` 컴포넌트 내부에 변수를 정의합니다. `<EntryObject>` 내부에 있는 경우 개인변수로 설정됩니다. 이 컴포넌트는 `<Project>`의 자식으로 사용해야 합니다.
+ * @example
+ * const project = jsxToProject(
+ *   <Project name='멋진 작품'>
+ *     <Variable name='전역변수' value='모든 곳에서 액세스 가능' />
+ *     <Scene name='장면 1'>
+ *       <EntryObject name='엔트리봇'>
+ *         <Variable name='개인변수' value='엔트리봇만 액세스 가능' />
+ *       </EntryObject>
+ *     </Scene>
+ *   </Project>
+ * )
+ */
 export function Variable({
   name,
   value,
@@ -341,7 +413,7 @@ export function Variable({
   isCloud = false,
   isRealTime = false,
   cloudDate = false,
-}: Partial<Omit<VariableType, 'name' | 'value'>> & { name: string, value: string }) {
+}: Partial<Omit<VariableType, 'name' | 'value'>> & { name: string, value: any }) {
   const project = use(ProjectContext)
   if (!project) throw TypeError('<Variable> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
@@ -361,37 +433,132 @@ export function Variable({
     cloudDate,
   }
 
-  const i = project.variables.findIndex(v => v.id == id)
-  if (i >= 0) project.variables.splice(i, 1)
-
-  project.variables.push(variable)
+  useParam(project.variables, { value: variable })
 
   return null
 }
 
-export function VariableId({ name }: { name: string }) {
-  const project = use(ProjectContext)
-  if (!project) throw TypeError('<VariableId> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
-
+/**
+ * `<Script>` 컴포넌트 내부에 변수 매개변수를 정의합니다. 이 컴포넌트는 `<Script>`의 자식으로 사용해야 합니다.
+ * @example
+ * const project = jsxToProject(
+ *   <Project name='멋진 작품'>
+ *     <Variable name='전역변수' value='모든 곳에서 액세스 가능' />
+ *     <Scene name='장면 1'>
+ *       <EntryObject name='엔트리봇'>
+ *         <Statement>
+ *           <Script type='set_variable'>
+ *             <VariableParam name='전역변수' />
+ *             <Param value='1' />
+ *             <Param />
+ *           </Script>
+ *         </Statement>
+ *       </EntryObject>
+ *     </Scene>
+ *   </Project>
+ * )
+ */
+export function VariableParam({ name }: { name: string }) {
   const params = use(ParamsContext)
-  if (!params) throw TypeError('<VariableId> 컴포넌트는 <Param> 내부에서 사용해야 합니다.')
+  if (!params) throw TypeError('<VariableParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const symbol = useRef(Symbol('param')).current
+  const project = use(ProjectContext)
+  if (!project) throw TypeError('<VariableParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
-  const paramSymbols = paramsMap.get(params) || []
-  paramsMap.set(params, paramSymbols)
+  useParam(params, {
+    get() {
+      const id = project.variables.find(v => v.name == name)?.id
+      if (!id) throw TypeError(`'${name}' 변수를 찾지 못했습니다.`)
+      return id
+    },
+  })
 
-  const i = paramSymbols.indexOf(symbol)
-  if (i >= 0) {
-    params.splice(i, 1)
-    paramSymbols.splice(i, 1)
+  return null
+}
+
+export function Picture({ name, fileurl, thumbUrl = fileurl, imageType, width, height, selected }: {
+  name: string
+  fileurl: string
+  thumbUrl?: string
+  imageType: string
+  width: number
+  height: number
+  selected?: boolean
+}) {
+  const object = use(ObjectContext)
+  if (!object) throw TypeError('<Picture> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+
+  const id = useEntryId()
+  const picture: PictureType = {
+    id,
+    name,
+    fileurl,
+    thumbUrl,
+    imageType,
+    dimension: { width, height },
   }
 
-  const id = project.variables.find(v => v.name == name)?.id
-  if (!id) throw TypeError(`'${name}' 변수를 찾지 못했습니다. <Variable> 컴포넌트는 <VariableId> 컴포넌트보다 위에 있어야 합니다.`)
+  useParam(object.sprite.pictures, { value: picture })
+  if (selected) object.selectedPictureId = id
 
-  params.push(id)
-  paramSymbols.push(symbol)
-  
+  return null
+}
+
+export function PictureParam({ name }: { name: string }) {
+  const params = use(ParamsContext)
+  if (!params) throw TypeError('<PictureParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
+
+  const object = use(ObjectContext)
+  if (!object) throw TypeError('<PictureParam> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+
+  useParam(params, {
+    get() {
+      const id = object.sprite.pictures.find(v => v.name == name)?.id
+      if (!id) throw TypeError(`'${name}' 모양을 찾지 못했습니다.`)
+      return id
+    },
+  })
+
+  return null
+}
+
+export function Sound({ name, fileurl, duration, ext }: {
+  name: string
+  fileurl: string
+  duration: number
+  ext: string
+}) {
+  const object = use(ObjectContext)
+  if (!object) throw TypeError('<Sound> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+
+  const id = useEntryId()
+  const sound: SoundType = {
+    id,
+    name,
+    fileurl,
+    duration,
+    ext,
+  }
+
+  useParam(object.sprite.sounds, { value: sound })
+
+  return null
+}
+
+export function SoundParam({ name }: { name: string }) {
+  const params = use(ParamsContext)
+  if (!params) throw TypeError('<SoundParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
+
+  const object = use(ObjectContext)
+  if (!object) throw TypeError('<SoundParam> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+
+  useParam(params, {
+    get() {
+      const id = object.sprite.sounds.find(v => v.name == name)?.id
+      if (!id) throw TypeError(`'${name}' 소리를 찾지 못했습니다.`)
+      return id
+    },
+  })
+
   return null
 }
