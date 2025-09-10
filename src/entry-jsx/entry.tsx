@@ -376,7 +376,7 @@ export function ObjectParam({ name }: {
   if (!params) throw TypeError('<ObjectParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
   const project = use(ProjectContext)
-  if (!project) throw TypeError('<VariableParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
+  if (!project) throw TypeError('<ObjectParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   useParam(params, {
     get() {
