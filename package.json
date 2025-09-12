@@ -1,30 +1,35 @@
 {
   "name": "entry-jsx",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "bun --hot src/index.tsx",
-    "start": "NODE_ENV=production bun src/index.tsx",
-    "build": "bun run build.ts"
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "bun": "./src/index.tsx",
+      "deno": "./src/index.tsx",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    }
   },
-  "dependencies": {
-    "@radix-ui/react-label": "^2.1.7",
-    "@radix-ui/react-select": "^2.2.5",
-    "@radix-ui/react-slot": "^1.2.3",
-    "bun-plugin-tailwind": "^0.0.15",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.525.0",
+  "scripts": {
+    "prepack": "bun build --outfile=dist/index.mjs --minify --packages=external src && bun build --outfile=dist/index.cjs --minify --packages=external --format=cjs src && dts-bundle-generator --no-banner -o dist/index.d.ts src/index.tsx"
+  },
+  "peerDependencies": {
     "react": "^19",
-    "react-dom": "^19",
-    "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.11",
-    "tailwindcss-animate": "^1.0.7"
+    "react-dom": "^19"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/bun": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/bun": "latest"
+    "dts-bundle-generator": "^9.5.1",
+    "eslint": "^9.35.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.4.0",
+    "jiti": "^2.5.1",
+    "typescript-eslint": "^8.43.0"
   }
 }

@@ -1,4 +1,4 @@
-import { createContext, use, useRef } from 'react'
+import React, { createContext, use, useRef } from 'react'
 import type {
   EntryObjectType,
   ObjectType,
@@ -26,7 +26,7 @@ function useEntryId(length = 4) {
  * 배열마다 중복 값이 들어가는 것을 방지하기 위한 `WeakMap`입니다.
  * @private
  */
-const paramsMap = new WeakMap<any[], symbol[]>()
+const paramsMap = new WeakMap<unknown[], symbol[]>()
 
 /**
  * 배열에 특정 항목을 중복 없이 넣어주는 hook입니다.
@@ -34,7 +34,7 @@ const paramsMap = new WeakMap<any[], symbol[]>()
  * @param params 매개변수가 들어갈 배열
  * @param param 배열에 들어갈 값의 descriptor
  */
-function useParam(params: any[], param: PropertyDescriptor & ThisType<any>) {
+function useParam(params: unknown[], param: PropertyDescriptor & ThisType<unknown>) {
   const symbol = useRef(Symbol('param')).current
 
   const paramSymbols = paramsMap.get(params) || []
@@ -60,7 +60,7 @@ const ProjectContext = createContext<ProjectType | null>(null)
 const SceneContext = createContext<string | null>(null)
 const ObjectContext = createContext<EntryObjectType | null>(null)
 const ScriptContext = createContext<ScriptType[][] | null>(null)
-const ParamsContext = createContext<any[] | null>(null)
+const ParamsContext = createContext<unknown[] | null>(null)
 
 /**
  * 작품에 대한 정보를 정의할 때 사용되는 컴포넌트입니다. 이 컴포넌트는 `jsxToProject()` 함수의 매개변수에 사용해야 합니다.
@@ -131,13 +131,15 @@ export function Project({
  *   </Project>
  * )
  */
-export function Scene({ name, children }: React.PropsWithChildren<{
+export function Scene({ id, name, children }: React.PropsWithChildren<{
+  id?: string
   name: string
 }>) {
   const project = use(ProjectContext)
   if (!project) throw TypeError('<Scene> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
-  const id = useEntryId()
+  const defaultId = useEntryId()
+  id ||= defaultId
   useParam(project.scenes, { value: { id, name } })
 
   return (
@@ -163,6 +165,7 @@ export function Scene({ name, children }: React.PropsWithChildren<{
  * )
  */
 export function EntryObject({
+  id,
   name,
   lock = false,
   objectType = 'sprite',
@@ -181,6 +184,7 @@ export function EntryObject({
   regY = height / 2,
   children,
 }: React.PropsWithChildren<{
+  id?: string
   name: string
   lock?: boolean
   objectType?: ObjectType
@@ -204,7 +208,8 @@ export function EntryObject({
   const project = use(ProjectContext)
   if (!project) throw TypeError('<EntryObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
-  const id = useEntryId()
+  const defaultId = useEntryId()
+  id ||= defaultId
 
   const script: ScriptType[][] = []
   const object: EntryObjectType = {
@@ -360,10 +365,10 @@ export function Script({
  * )
  */
 export function Param({ value = null }: {
-  value?: any
+  value?: unknown
 }) {
   const params = use(ParamsContext)
-  if (!params) throw TypeError('<Param> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
+  if (!params) throw TypeError('<Param> 컴포넌트는 <Script> 또는 <Statement> 내부에서 사용해야 합니다.')
 
   useParam(params, { value })
   return null
@@ -412,7 +417,7 @@ export function Variable({
   isCloud = false,
   isRealTime = false,
   cloudDate = false,
-}: Partial<Omit<VariableType, 'name' | 'value'>> & { name: string, value: any }) {
+}: Partial<Omit<VariableType, 'name' | 'value'>> & { name: string, value: unknown }) {
   const project = use(ProjectContext)
   if (!project) throw TypeError('<Variable> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
