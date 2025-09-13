@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "prepack": "bun build --outfile=dist/index.mjs --minify --packages=external src && bun build --outfile=dist/index.cjs --minify --packages=external --format=cjs src && dts-bundle-generator --no-banner -o dist/index.d.ts src/index.tsx"
+    "prepack": "bun build --outfile=dist/index.mjs --minify --packages=external src && bun build --outfile=dist/index.cjs --minify --packages=external --format=cjs src && dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
   },
   "peerDependencies": {
     "react": "^19",

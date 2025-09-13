@@ -6,7 +6,7 @@ import {
   Project,
   Scene,
   Sound,
-} from 'entry-jsx'
+} from '@/.'
 
 function Main() {
   const date = useRef(new Date).current
