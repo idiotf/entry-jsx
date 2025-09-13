@@ -5,8 +5,8 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "bun": "./src/index.tsx",
-      "deno": "./src/index.tsx",
+      "bun": "./src/index.ts",
+      "deno": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
