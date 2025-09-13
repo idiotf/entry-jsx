@@ -2,11 +2,14 @@
   "name": "entry-jsx",
   "version": "0.1.0",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
-      "bun": "./src/index.ts",
-      "deno": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
@@ -14,7 +17,7 @@
     }
   },
   "scripts": {
-    "prepack": "bun build --outfile=dist/index.mjs --minify --packages=external src && bun build --outfile=dist/index.cjs --minify --packages=external --format=cjs src && dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
+    "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs src && bun dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
   },
   "peerDependencies": {
     "react": "^19",
