@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import type { VariableData } from '@/types'
-import { useEntryId, useParam } from '@/hooks'
-import { ProjectContext, ObjectContext } from '@/contexts'
+import { useEntryId, useParam } from '@/internal/hooks'
+import { ProjectContext, ObjectContext } from '@/internal/contexts'
 
 export interface VariableProps extends Partial<Omit<VariableData, 'name' | 'value'>> {
   name: string

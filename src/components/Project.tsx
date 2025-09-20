@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT, ProjectContext } from '@/contexts'
+import { RootProjectContext, ProjectContext } from '@/internal/contexts'
 import type { ProjectData } from '@/types'
 
 export type ProjectProps = React.PropsWithChildren<{
@@ -34,7 +34,7 @@ export function Project({
   externalModulesLite = [],
   children,
 }: ProjectProps) {
-  const obj = useContext(DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT)
+  const obj = useContext(RootProjectContext)
   if (!obj) throw TypeError('<Project> 컴포넌트는 jsxToProject() 내부에서 사용해야 합니다.')
   
   const project: ProjectData = {

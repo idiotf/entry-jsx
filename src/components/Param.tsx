@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { useParam } from '@/hooks'
-import { ObjectContext, ParamsContext, ProjectContext } from '@/contexts'
+import { useParam } from '@/internal/hooks'
+import { ObjectContext, ParamsContext, ProjectContext } from '@/internal/contexts'
 
 /**
  * `<Script>` 컴포넌트 내부에 일반 매개변수를 정의합니다.

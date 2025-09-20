@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
-import { useEntryId, useParam } from '@/hooks'
+import { useEntryId, useParam } from '@/internal/hooks'
 
 import {
   SceneContext,
   ProjectContext,
   ObjectContext,
   ScriptContext,
-} from '@/contexts'
+} from '@/internal/contexts'
 
 import type {
   ObjectType,

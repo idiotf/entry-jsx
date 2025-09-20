@@ -1,4 +1,5 @@
-export * from './EntryObject'
+export * from './Message'
+export * from './Object'
 export * from './Param'
 export * from './Project'
 export * from './Scene'

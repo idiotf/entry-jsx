@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import type { ScriptData } from '@/types'
-import { useEntryId, useParam } from '@/hooks'
-import { ParamsContext, ScriptContext } from '@/contexts'
+import { useEntryId, useParam } from '@/internal/hooks'
+import { ParamsContext, ScriptContext } from '@/internal/contexts'
 
 export interface ScriptProps extends React.PropsWithChildren<Partial<Omit<ScriptData, 'type'>>> {
   type: string

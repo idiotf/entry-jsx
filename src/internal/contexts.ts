@@ -2,10 +2,10 @@ import { createContext } from 'react'
 import type { ObjectData, ProjectData, ScriptData } from '@/types'
 
 /**
- * 이 컨텍스트는 `jsxToProject()` 내부 구현을 위해서만 사용됩니다. 이 컨텍스트를 직접 사용하지 마세요.
+ * 이 컨텍스트는 `jsxToProject()` 내부 구현을 위해서 사용됩니다.
  * @private
  */
-export const DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT = createContext<object | null>(null)
+export const RootProjectContext = createContext<object | null>(null)
 
 /**
  * 이 컨텍스트는 `<Project>` 컴포넌트의 작품 객체를 참조하는 데 사용됩니다.
