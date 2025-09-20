@@ -1,11 +1,14 @@
 import React, { useRef } from 'react'
 import {
-  EntryObject,
+  SpriteObject,
   jsxToProject,
   Picture,
   Project,
   Scene,
   Sound,
+  Statement,
+  Script,
+  Param,
 } from '@/.'
 
 function Main() {
@@ -19,7 +22,7 @@ function Main() {
   return (
     <Project name={`${dateString}_작품`}>
       <Scene name='장면 1'>
-        <EntryObject
+        <SpriteObject
           name='엔트리봇'
           width={144}
           height={246}
@@ -30,7 +33,6 @@ function Main() {
           <Picture
             name='엔트리봇_걷기1'
             fileurl='/lib/entry-js/images/media/entrybot1.svg'
-            imageType='svg'
             width={144}
             height={246}
             selected
@@ -38,7 +40,6 @@ function Main() {
           <Picture
             name='엔트리봇_걷기2'
             fileurl='/lib/entry-js/images/media/entrybot2.svg'
-            imageType='svg'
             width={144}
             height={246}
           />
@@ -47,12 +48,29 @@ function Main() {
             name='강아지 짖는 소리'
             fileurl='/lib/entry-js/images/media/bark.mp3'
             duration={1.3}
-            ext='.mp3'
           />
-        </EntryObject>
+
+          <Statement>
+            <Script type='when_run_button_click' />
+            <Script type='repeat_basic'>
+              <Param value={10} />
+              <Statement>
+                <Script type='move_direction'>
+                  <Param value={10} />
+                </Script>
+                <Script type='wait_until_true'>
+                  <Script type='boolean_not'>
+                    <Param />
+                    <Script type='continue_repeat' />
+                  </Script>
+                </Script>
+              </Statement>
+            </Script>
+          </Statement>
+        </SpriteObject>
       </Scene>
     </Project>
   )
 }
 
-console.log(JSON.stringify(jsxToProject(<Main />), null, 2))
+console.log(JSON.stringify(jsxToProject(<Main />)))

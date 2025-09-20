@@ -10,14 +10,14 @@ import { ObjectContext, ParamsContext, ProjectContext } from '@/contexts'
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
- *       <EntryObject name='엔트리봇'>
+ *       <SpriteObject name='엔트리봇'>
  *         <Statement>
  *           <Script type='when_some_key_pressed'>
  *             <Param />
  *             <Param value='q' />
  *           </Script>
  *         </Statement>
- *       </EntryObject>
+ *       </SpriteObject>
  *     </Scene>
  *   </Project>
  * )
@@ -60,7 +60,7 @@ export function ObjectParam({ name }: {
  *   <Project name='멋진 작품'>
  *     <Variable name='전역변수' value='모든 곳에서 액세스 가능' />
  *     <Scene name='장면 1'>
- *       <EntryObject name='엔트리봇'>
+ *       <SpriteObject name='엔트리봇'>
  *         <Statement>
  *           <Script type='set_variable'>
  *             <VariableParam name='전역변수' />
@@ -68,7 +68,7 @@ export function ObjectParam({ name }: {
  *             <Param />
  *           </Script>
  *         </Statement>
- *       </EntryObject>
+ *       </SpriteObject>
  *     </Scene>
  *   </Project>
  * )

@@ -1,13 +1,27 @@
 import React, { use } from 'react'
 import { useEntryId, useParam } from '@/hooks'
-import { SceneContext, ProjectContext, ObjectContext, ScriptContext } from '@/contexts'
-import type { ObjectType, RotateMethod, ScriptType, EntryObjectType, PictureType, SoundType } from '@/types'
 
-export type EntryObjectProps = React.PropsWithChildren<{
+import {
+  SceneContext,
+  ProjectContext,
+  ObjectContext,
+  ScriptContext,
+} from '@/contexts'
+
+import type {
+  ObjectType,
+  RotateMethod,
+  ScriptData,
+  ObjectData,
+  PictureData,
+  SoundData,
+} from '@/types'
+
+export interface SpriteObjectProps {
   id?: string
   name: string
-  lock?: boolean
   objectType?: ObjectType
+  lock?: boolean
   rotateMethod?: RotateMethod
   x?: number
   y?: number
@@ -19,9 +33,9 @@ export type EntryObjectProps = React.PropsWithChildren<{
   direction?: number
   width?: number
   height?: number
-  font?: string
   visible?: boolean
-}>
+  selected?: boolean
+}
 
 /**
  * 오브젝트에 대한 정보를 정의할 때 사용되는 컴포넌트입니다.
@@ -30,20 +44,19 @@ export type EntryObjectProps = React.PropsWithChildren<{
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
- *       <EntryObject name='엔트리봇'>
+ *       <SpriteObject name='엔트리봇'>
  *         <Statement>
  *           ...
  *         </Statement>
- *       </EntryObject>
+ *       </SpriteObject>
  *     </Scene>
  *   </Project>
  * )
  */
-export function EntryObject({
+export function SpriteObject({
   id,
   name,
   lock = false,
-  objectType = 'sprite',
   rotateMethod = 'free',
   x = 0,
   y = 0,
@@ -53,27 +66,38 @@ export function EntryObject({
   direction = 90,
   width = 0,
   height = 0,
-  font = 'undefinedpx ',
   visible = false,
   regX = width / 2,
   regY = height / 2,
+  selected,
   children,
-}: EntryObjectProps) {
+}: React.PropsWithChildren<SpriteObjectProps>) {
   const scene = use(SceneContext)
-  if (!scene) throw TypeError('<EntryObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
+  if (!scene) throw TypeError('<SpriteObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
 
   const project = use(ProjectContext)
-  if (!project) throw TypeError('<EntryObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
+  if (!project) throw TypeError('<SpriteObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
   id ||= defaultId
 
-  const script: ScriptType[][] = []
-  const object: EntryObjectType = {
+  const script: ScriptData[][] = []
+  const object: ObjectData = {
     id,
     name,
-    lock,
+    objectType: 'sprite',
     scene,
+    lock,
+    rotateMethod,
+    entity: {
+      x, y,
+      regX, regY,
+      scaleX, scaleY,
+      rotation, direction,
+      width, height,
+      font: 'undefinedpx ',
+      visible,
+    },
     get script() {
       return JSON.stringify(script)
     },
@@ -81,20 +105,10 @@ export function EntryObject({
       pictures: [],
       sounds: [],
     },
-    entity: {
-      x, y,
-      regX, regY,
-      scaleX, scaleY,
-      rotation, direction,
-      width, height,
-      font,
-      visible,
-    },
-    objectType,
-    rotateMethod,
   }
 
   useParam(project.objects, { value: object })
+  if (selected) project.interface.object = id
 
   return (
     <ObjectContext value={object}>
@@ -105,20 +119,144 @@ export function EntryObject({
   )
 }
 
-export function Picture({ name, fileurl, thumbUrl = fileurl, imageType, width, height, selected }: {
+export interface TextBoxObjectProps extends SpriteObjectProps {
+  font?: string
+  text?: string
+  colour?: string
+  textAlign?: 0 | 1 | 2
+  lineBreak?: boolean
+  bgColor?: string
+  underLine?: boolean
+  strike?: boolean
+  fontSize?: number
+}
+
+/**
+ * 오브젝트에 대한 정보를 정의할 때 사용되는 컴포넌트입니다.
+ * 이 컴포넌트는 `<Scene>`의 자식으로 사용해야 합니다.
+ * @example
+ * const project = jsxToProject(
+ *   <Project name='멋진 작품'>
+ *     <Scene name='장면 1'>
+ *       <TextBoxObject name='글상자'>
+ *         <Statement>
+ *           ...
+ *         </Statement>
+ *       </TextBoxObject>
+ *     </Scene>
+ *   </Project>
+ * )
+ */
+export function TextBoxObject({
+  id,
+  name,
+  text = '글상자',
+  lock = false,
+  rotateMethod = 'free',
+  x = 0,
+  y = 0,
+  scaleX = 1,
+  scaleY = 1,
+  rotation = 0,
+  direction = 90,
+  width = 0,
+  height = 0,
+  visible = false,
+  regX = width / 2,
+  regY = height / 2,
+  colour = '#000000',
+  textAlign = 0,
+  lineBreak = false,
+  bgColor = '#ffffff',
+  underLine = false,
+  strike = false,
+  fontSize = 20,
+  font = `${fontSize}px Nanum Gothic`,
+  selected,
+  children,
+}: React.PropsWithChildren<TextBoxObjectProps>) {
+  const scene = use(SceneContext)
+  if (!scene) throw TypeError('<TextBoxObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
+
+  const project = use(ProjectContext)
+  if (!project) throw TypeError('<TextBoxObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
+
+  const defaultId = useEntryId()
+  id ||= defaultId
+
+  const script: ScriptData[][] = []
+  const object: ObjectData = {
+    id,
+    name,
+    text,
+    objectType: 'textBox',
+    scene,
+    lock,
+    rotateMethod,
+    entity: {
+      x, y,
+      regX, regY,
+      scaleX, scaleY,
+      rotation, direction,
+      width, height,
+      font, fontSize,
+      text, textAlign,
+      colour, bgColor,
+      underLine, strike,
+      lineBreak, visible,
+    },
+    get script() {
+      return JSON.stringify(script)
+    },
+    sprite: {
+      pictures: [],
+      sounds: [],
+    },
+  }
+
+  useParam(project.objects, { value: object })
+  if (selected) project.interface.object = id
+
+  return (
+    <ObjectContext value={object}>
+      <ScriptContext value={script}>
+        {children}
+      </ScriptContext>
+    </ObjectContext>
+  )
+}
+
+export interface PictureProps {
+  id?: string
   name: string
   fileurl: string
   thumbUrl?: string
-  imageType: string
+  imageType?: string
   width: number
   height: number
   selected?: boolean
-}) {
-  const object = use(ObjectContext)
-  if (!object) throw TypeError('<Picture> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+}
 
-  const id = useEntryId()
-  const picture: PictureType = {
+const imageTypeRegex = /(?<=\.)[^.]*$/
+const soundExtRegex = /\.[^.]*$/
+
+export function Picture({
+  id,
+  name,
+  fileurl,
+  thumbUrl = fileurl,
+  imageType = fileurl.match(imageTypeRegex)?.[0] || 'png',
+  width,
+  height,
+  selected,
+}: PictureProps) {
+  const object = use(ObjectContext)
+  if (object?.objectType != 'sprite') throw TypeError('<Picture> 컴포넌트는 <SpriteObject> 내부에서 사용해야 합니다.')
+
+  const defaultId = useEntryId()
+  id ||= defaultId
+
+  const picture: PictureData = {
     id,
     name,
     fileurl,
@@ -133,17 +271,28 @@ export function Picture({ name, fileurl, thumbUrl = fileurl, imageType, width, h
   return null
 }
 
-export function Sound({ name, fileurl, duration, ext }: {
+export interface SoundProps {
+  id?: string
   name: string
   fileurl: string
   duration: number
-  ext: string
-}) {
-  const object = use(ObjectContext)
-  if (!object) throw TypeError('<Sound> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
+  ext?: string
+}
 
-  const id = useEntryId()
-  const sound: SoundType = {
+export function Sound({
+  id,
+  name,
+  fileurl,
+  duration,
+  ext = fileurl.match(soundExtRegex)?.[0] || '.mp3',
+}: SoundProps) {
+  const object = use(ObjectContext)
+  if (!object) throw TypeError('<Sound> 컴포넌트는 <SpriteObject> 또는 <TextBoxObject> 내부에서 사용해야 합니다.')
+
+  const defaultId = useEntryId()
+  id ||= defaultId
+
+  const sound: SoundData = {
     id,
     name,
     fileurl,

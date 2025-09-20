@@ -1,9 +1,9 @@
 import React, { use } from 'react'
-import type { ScriptType } from '@/types'
+import type { ScriptData } from '@/types'
 import { useEntryId, useParam } from '@/hooks'
 import { ParamsContext, ScriptContext } from '@/contexts'
 
-export interface ScriptProps extends React.PropsWithChildren<Partial<Omit<ScriptType, 'type'>>> {
+export interface ScriptProps extends React.PropsWithChildren<Partial<Omit<ScriptData, 'type'>>> {
   type: string
 }
 
@@ -41,7 +41,7 @@ export function Script({
 
   const id = useEntryId()
 
-  const script: ScriptType = {
+  const script: ScriptData = {
     id,
     type,
     params: [],
@@ -92,7 +92,7 @@ export function Statement({ children }: React.PropsWithChildren) {
   const script = use(ScriptContext)
   if (!script) throw TypeError('<Statement> 컴포넌트는 <Script> 또는 <EntryObject> 내부에서 사용해야 합니다.')
 
-  const statement: ScriptType[] = []
+  const statement: ScriptData[] = []
 
   useParam(script, { value: statement })
 

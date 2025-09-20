@@ -1,9 +1,9 @@
 import React, { use } from 'react'
-import type { ProjectType } from '@/types'
 import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT, ProjectContext } from '@/contexts'
+import type { ProjectData } from '@/types'
 
 export type ProjectProps = React.PropsWithChildren<{
-  name: string
+  name?: string
   speed?: number
   interface?: object
   expansionBlocks?: string[]
@@ -34,10 +34,10 @@ export function Project({
   externalModulesLite = [],
   children,
 }: ProjectProps) {
-  const project = use(DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT)
-  if (!project) throw TypeError('<Project> 컴포넌트는 jsxToProject() 내부에서 사용해야 합니다.')
-
-  const assignedProject = Object.assign(project, {
+  const obj = use(DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT)
+  if (!obj) throw TypeError('<Project> 컴포넌트는 jsxToProject() 내부에서 사용해야 합니다.')
+  
+  const project: ProjectData = {
     name,
     interface: entryInterface,
     scenes: [],
@@ -52,10 +52,10 @@ export function Project({
     speed,
     externalModules,
     externalModulesLite,
-  } satisfies ProjectType)
+  }
 
   return (
-    <ProjectContext value={assignedProject}>
+    <ProjectContext value={Object.assign(obj, project)}>
       {children}
     </ProjectContext>
   )

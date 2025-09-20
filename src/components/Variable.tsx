@@ -1,9 +1,9 @@
 import { use } from 'react'
-import type { VariableType } from '@/types'
+import type { VariableData } from '@/types'
 import { useEntryId, useParam } from '@/hooks'
 import { ProjectContext, ObjectContext } from '@/contexts'
 
-export interface VariableProps extends Partial<Omit<VariableType, 'name' | 'value'>> {
+export interface VariableProps extends Partial<Omit<VariableData, 'name' | 'value'>> {
   name: string
   value: unknown
 }
@@ -40,8 +40,9 @@ export function Variable({
   const id = useEntryId()
   const object = use(ObjectContext)
 
-  const variable: VariableType = {
+  const variable: VariableData = {
     id,
+    variableType: 'variable',
     name,
     value,
     visible,
