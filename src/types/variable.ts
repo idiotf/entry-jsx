@@ -10,7 +10,7 @@ export interface BaseVariableData {
   y: number
   isCloud: boolean
   isRealTime: boolean
-  cloudDate: unknown
+  cloudDate?: false
   object: string | null
 }
 

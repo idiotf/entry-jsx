@@ -1,11 +1,3 @@
-export type * from './object'
-export type * from './variable'
-export type * from './message'
-export type * from './function'
-export type * from './scene'
-export type * from './interface'
-export type * from './table'
-
 import type { ObjectData } from './object'
 import type { VariableData } from './variable'
 import type { MessageData } from './message'
@@ -13,6 +5,14 @@ import type { FunctionData } from './function'
 import type { SceneData } from './scene'
 import type { InterfaceState } from './interface'
 import type { TableData } from './table'
+
+export type * from './object'
+export type * from './variable'
+export type * from './message'
+export type * from './function'
+export type * from './scene'
+export type * from './interface'
+export type * from './table'
 
 export interface ProjectData {
   name?: string
