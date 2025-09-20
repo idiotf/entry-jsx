@@ -24,15 +24,15 @@
     "react-dom": "^19"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^9.36.0",
     "@types/bun": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dts-bundle-generator": "^9.5.1",
-    "eslint": "^9.35.0",
+    "eslint": "^9.36.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
     "jiti": "^2.5.1",
-    "typescript-eslint": "^8.43.0"
+    "typescript-eslint": "^8.44.0"
   }
 }
