@@ -1,5 +1,6 @@
 {
   "name": "entry-jsx",
+  "description": "엔트리 작품을 JSX로 나타낼 수 있게 해주는 라이브러리입니다.",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.cjs",
@@ -17,7 +18,7 @@
     }
   },
   "scripts": {
-    "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs src && bun dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
+    "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom --production src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs --production src && bun dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
