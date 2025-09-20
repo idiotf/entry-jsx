@@ -1,4 +1,4 @@
-import { use } from 'react'
+import { useContext } from 'react'
 import type { VariableData } from '@/types'
 import { useEntryId, useParam } from '@/hooks'
 import { ProjectContext, ObjectContext } from '@/contexts'
@@ -34,11 +34,11 @@ export function Variable({
   isRealTime = false,
   cloudDate = false,
 }: VariableProps) {
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<Variable> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const id = useEntryId()
-  const object = use(ObjectContext)
+  const object = useContext(ObjectContext)
 
   const variable: VariableData = {
     id,

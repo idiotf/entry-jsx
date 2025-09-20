@@ -20,14 +20,14 @@
     "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs src && bun dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
   },
   "peerDependencies": {
-    "react": "^19",
-    "react-dom": "^19"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@types/bun": "latest",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "dts-bundle-generator": "^9.5.1",
     "eslint": "^9.36.0",
     "eslint-plugin-react": "^7.37.5",

@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { useContext } from 'react'
 import type { ScriptData } from '@/types'
 import { useEntryId, useParam } from '@/hooks'
 import { ParamsContext, ScriptContext } from '@/contexts'
@@ -36,7 +36,7 @@ export function Script({
   extensions = [],
   children,
 }: ScriptProps) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<Script> 컴포넌트는 <Script> 또는 <Statement> 내부에서 사용해야 합니다.')
 
   const id = useEntryId()
@@ -60,11 +60,11 @@ export function Script({
   useParam(params, { value: script })
 
   return (
-    <ScriptContext value={script.statements}>
-      <ParamsContext value={script.params}>
+    <ScriptContext.Provider value={script.statements}>
+      <ParamsContext.Provider value={script.params}>
         {children}
-      </ParamsContext>
-    </ScriptContext>
+      </ParamsContext.Provider>
+    </ScriptContext.Provider>
   )
 }
 
@@ -89,7 +89,7 @@ export function Script({
  * )
  */
 export function Statement({ children }: React.PropsWithChildren) {
-  const script = use(ScriptContext)
+  const script = useContext(ScriptContext)
   if (!script) throw TypeError('<Statement> 컴포넌트는 <Script> 또는 <EntryObject> 내부에서 사용해야 합니다.')
 
   const statement: ScriptData[] = []
@@ -97,8 +97,8 @@ export function Statement({ children }: React.PropsWithChildren) {
   useParam(script, { value: statement })
 
   return (
-    <ParamsContext value={statement}>
+    <ParamsContext.Provider value={statement}>
       {children}
-    </ParamsContext>
+    </ParamsContext.Provider>
   )
 }

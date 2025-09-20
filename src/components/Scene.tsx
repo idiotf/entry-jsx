@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { useContext } from 'react'
 import { useEntryId, useParam } from '@/hooks'
 import { ProjectContext, SceneContext } from '@/contexts'
 
@@ -21,7 +21,7 @@ export type SceneProps = React.PropsWithChildren<{
  * )
  */
 export function Scene({ id, name, children }: SceneProps) {
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<Scene> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
@@ -29,8 +29,8 @@ export function Scene({ id, name, children }: SceneProps) {
   useParam(project.scenes, { value: { id, name } })
 
   return (
-    <SceneContext value={id}>
+    <SceneContext.Provider value={id}>
       {children}
-    </SceneContext>
+    </SceneContext.Provider>
   )
 }

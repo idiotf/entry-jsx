@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { useContext } from 'react'
 import { useEntryId, useParam } from '@/hooks'
 
 import {
@@ -72,10 +72,10 @@ export function SpriteObject({
   selected,
   children,
 }: React.PropsWithChildren<SpriteObjectProps>) {
-  const scene = use(SceneContext)
+  const scene = useContext(SceneContext)
   if (!scene) throw TypeError('<SpriteObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
 
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<SpriteObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
@@ -111,11 +111,11 @@ export function SpriteObject({
   if (selected) project.interface.object = id
 
   return (
-    <ObjectContext value={object}>
-      <ScriptContext value={script}>
+    <ObjectContext.Provider value={object}>
+      <ScriptContext.Provider value={script}>
         {children}
-      </ScriptContext>
-    </ObjectContext>
+      </ScriptContext.Provider>
+    </ObjectContext.Provider>
   )
 }
 
@@ -175,10 +175,10 @@ export function TextBoxObject({
   selected,
   children,
 }: React.PropsWithChildren<TextBoxObjectProps>) {
-  const scene = use(SceneContext)
+  const scene = useContext(SceneContext)
   if (!scene) throw TypeError('<TextBoxObject> 컴포넌트는 <Scene> 내부에서 사용해야 합니다.')
 
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<TextBoxObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
@@ -218,11 +218,11 @@ export function TextBoxObject({
   if (selected) project.interface.object = id
 
   return (
-    <ObjectContext value={object}>
-      <ScriptContext value={script}>
+    <ObjectContext.Provider value={object}>
+      <ScriptContext.Provider value={script}>
         {children}
-      </ScriptContext>
-    </ObjectContext>
+      </ScriptContext.Provider>
+    </ObjectContext.Provider>
   )
 }
 
@@ -250,7 +250,7 @@ export function Picture({
   height,
   selected,
 }: PictureProps) {
-  const object = use(ObjectContext)
+  const object = useContext(ObjectContext)
   if (object?.objectType != 'sprite') throw TypeError('<Picture> 컴포넌트는 <SpriteObject> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
@@ -286,7 +286,7 @@ export function Sound({
   duration,
   ext = fileurl.match(soundExtRegex)?.[0] || '.mp3',
 }: SoundProps) {
-  const object = use(ObjectContext)
+  const object = useContext(ObjectContext)
   if (!object) throw TypeError('<Sound> 컴포넌트는 <SpriteObject> 또는 <TextBoxObject> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()

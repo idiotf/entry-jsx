@@ -14,9 +14,9 @@ export function jsxToProject(children: React.ReactNode) {
 
   // project 변수 내부의 속성이 변하도록 하기 위해 컴포넌트를 렌더링합니다.
   renderToStaticMarkup(
-    <DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT value={project}>
+    <DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT.Provider value={project}>
       {children}
-    </DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT>
+    </DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT.Provider>
   )
 
   // <Project> 컴포넌트를 사용했는지 검토합니다.

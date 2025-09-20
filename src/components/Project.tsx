@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React, { useContext } from 'react'
 import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT, ProjectContext } from '@/contexts'
 import type { ProjectData } from '@/types'
 
@@ -34,7 +34,7 @@ export function Project({
   externalModulesLite = [],
   children,
 }: ProjectProps) {
-  const obj = use(DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT)
+  const obj = useContext(DO_NOT_USE_OR_YOU_WILL_BE_FIRED_ROOT_PROJECT_CONTEXT)
   if (!obj) throw TypeError('<Project> 컴포넌트는 jsxToProject() 내부에서 사용해야 합니다.')
   
   const project: ProjectData = {
@@ -55,8 +55,8 @@ export function Project({
   }
 
   return (
-    <ProjectContext value={Object.assign(obj, project)}>
+    <ProjectContext.Provider value={Object.assign(obj, project)}>
       {children}
-    </ProjectContext>
+    </ProjectContext.Provider>
   )
 }

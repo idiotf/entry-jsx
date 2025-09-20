@@ -1,4 +1,4 @@
-import { use } from 'react'
+import { useContext } from 'react'
 import { useParam } from '@/hooks'
 import { ObjectContext, ParamsContext, ProjectContext } from '@/contexts'
 
@@ -25,7 +25,7 @@ import { ObjectContext, ParamsContext, ProjectContext } from '@/contexts'
 export function Param({ value = null }: {
   value?: unknown
 }) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<Param> 컴포넌트는 <Script> 또는 <Statement> 내부에서 사용해야 합니다.')
 
   useParam(params, { value })
@@ -35,10 +35,10 @@ export function Param({ value = null }: {
 export function ObjectParam({ name }: {
   name: string
 }) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<ObjectParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<ObjectParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   useParam(params, {
@@ -76,10 +76,10 @@ export function ObjectParam({ name }: {
 export function VariableParam({ name }: {
   name: string
 }) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<VariableParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const project = use(ProjectContext)
+  const project = useContext(ProjectContext)
   if (!project) throw TypeError('<VariableParam> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   useParam(params, {
@@ -96,10 +96,10 @@ export function VariableParam({ name }: {
 export function PictureParam({ name }: {
   name: string
 }) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<PictureParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const object = use(ObjectContext)
+  const object = useContext(ObjectContext)
   if (!object) throw TypeError('<PictureParam> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
 
   useParam(params, {
@@ -116,10 +116,10 @@ export function PictureParam({ name }: {
 export function SoundParam({ name }: {
   name: string
 }) {
-  const params = use(ParamsContext)
+  const params = useContext(ParamsContext)
   if (!params) throw TypeError('<SoundParam> 컴포넌트는 <Script> 내부에서 사용해야 합니다.')
 
-  const object = use(ObjectContext)
+  const object = useContext(ObjectContext)
   if (!object) throw TypeError('<SoundParam> 컴포넌트는 <EntryObject> 내부에서 사용해야 합니다.')
 
   useParam(params, {
