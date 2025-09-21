@@ -20,13 +20,13 @@ export const ProjectContext = createContext<ProjectData | null>(null)
 export const SceneContext = createContext<string | null>(null)
 
 /**
- * 이 컨텍스트는 `<EntryObject>` 컴포넌트의 오브젝트 객체를 참조하는 데 사용됩니다.
+ * 이 컨텍스트는 `<SpriteObject>`, `<TextBoxObject>` 컴포넌트의 오브젝트 객체를 참조하는 데 사용됩니다.
  * @private
  */
 export const ObjectContext = createContext<ObjectData | null>(null)
 
 /**
- * 이 컨텍스트는 `<EntryObject>`, `<Script>` 등 여러 statement 배열을 참조하는 데 사용됩니다.
+ * 이 컨텍스트는 `<SpriteObject>`, `<TextBoxObject>`, `<Script>` 등 여러 statement 배열을 참조하는 데 사용됩니다.
  * @private
  */
 export const ScriptContext = createContext<ScriptData[][] | null>(null)

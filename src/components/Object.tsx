@@ -79,7 +79,7 @@ export function SpriteObject({
   if (!project) throw TypeError('<SpriteObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
-  id ||= defaultId
+  id ??= defaultId
 
   const script: ScriptData[][] = []
   const object: ObjectData = {
@@ -182,7 +182,7 @@ export function TextBoxObject({
   if (!project) throw TypeError('<TextBoxObject> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
-  id ||= defaultId
+  id ??= defaultId
 
   const script: ScriptData[][] = []
   const object: ObjectData = {
@@ -254,7 +254,7 @@ export function Picture({
   if (object?.objectType != 'sprite') throw TypeError('<Picture> 컴포넌트는 <SpriteObject> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
-  id ||= defaultId
+  id ??= defaultId
 
   const picture: PictureData = {
     id,
@@ -290,7 +290,7 @@ export function Sound({
   if (!object) throw TypeError('<Sound> 컴포넌트는 <SpriteObject> 또는 <TextBoxObject> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
-  id ||= defaultId
+  id ??= defaultId
 
   const sound: SoundData = {
     id,

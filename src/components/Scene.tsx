@@ -13,9 +13,9 @@ export type SceneProps = React.PropsWithChildren<{
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
- *       <EntryObject name='엔트리봇'>
+ *       <SpriteObject name='엔트리봇'>
  *         ...
- *       </EntryObject>
+ *       </SpriteObject>
  *     </Scene>
  *   </Project>
  * )
@@ -25,7 +25,7 @@ export function Scene({ id, name, children }: SceneProps) {
   if (!project) throw TypeError('<Scene> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
-  id ||= defaultId
+  id ??= defaultId
   useParam(project.scenes, { value: { id, name } })
 
   return (

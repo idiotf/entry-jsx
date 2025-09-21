@@ -24,7 +24,7 @@ const paramsMap = new WeakMap<unknown[], symbol[]>()
  * @param params 매개변수가 들어갈 배열
  * @param descriptor 배열에 들어갈 값의 descriptor
  */
-export function useParam(params: unknown[], descriptor: PropertyDescriptor & ThisType<unknown>) {
+export function useParam<T>(params: T[], descriptor: PropertyDescriptor<T>) {
   const symbol = useRef(Symbol('param')).current
 
   const paramSymbols = paramsMap.get(params) || []
@@ -44,3 +44,20 @@ export function useParam(params: unknown[], descriptor: PropertyDescriptor & Thi
   })
   paramSymbols.push(symbol)
 }
+
+interface BasePropertyDescriptor {
+  configurable?: boolean
+  enumerable?: boolean
+}
+
+interface DataPropertyDescriptor<T> extends BasePropertyDescriptor {
+  value?: T
+  writable?: boolean
+}
+
+interface AccessorPropertyDescriptor<T> extends BasePropertyDescriptor {
+  get?(): T
+  set?(v: T): void
+}
+
+type PropertyDescriptor<T> = DataPropertyDescriptor<T> | AccessorPropertyDescriptor<T>
