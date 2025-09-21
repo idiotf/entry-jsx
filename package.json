@@ -18,7 +18,7 @@
     }
   },
   "scripts": {
-    "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom --production src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs --production src && bun dts-bundle-generator --no-banner -o dist/index.d.ts src/index.ts"
+    "prepack": "bun build --outfile=dist/index.mjs --minify --external=react --external=react-dom --production src && bun build --outfile=dist/index.cjs --minify --external=react --external=react-dom --format=cjs --production src && bun dts-bundle-generator --no-banner --export-referenced-types=false -o dist/index.d.ts src/index.ts"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
