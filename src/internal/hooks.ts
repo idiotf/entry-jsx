@@ -36,12 +36,10 @@ export function useParam<T>(params: T[], descriptor: PropertyDescriptor<T>) {
     paramSymbols.splice(i, 1)
   }
 
-  Object.defineProperty(params, params.length, {
+  Object.defineProperty(params, params.length, Object.assign({
     configurable: true,
     enumerable: true,
-    writable: true,
-    ...descriptor,
-  })
+  }, 'get' in descriptor || 'set' in descriptor ? {} : { writable: true }, descriptor))
   paramSymbols.push(symbol)
 }
 

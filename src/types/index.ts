@@ -1,5 +1,5 @@
 import type { ObjectData } from './object'
-import type { VariableData } from './variable'
+import type { BaseVariableData } from './variable'
 import type { MessageData } from './message'
 import type { FunctionData } from './function'
 import type { SceneData } from './scene'
@@ -18,7 +18,7 @@ export interface ProjectData {
   name?: string
   speed: number
   objects: ObjectData[]
-  variables: VariableData[]
+  variables: BaseVariableData[]
   messages: MessageData[]
   functions: FunctionData[]
   scenes: SceneData[]
@@ -31,11 +31,11 @@ export interface ProjectData {
   externalModulesLite: string[]
 }
 
-export interface ScriptData {
+export interface BlockData {
   id: string
   type: string
   params: unknown[]
-  statements: ScriptData[][]
+  statements: BlockData[][]
   x: number
   y: number
   deletable: number | false

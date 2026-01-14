@@ -1,11 +1,16 @@
 import { useContext } from 'react'
-import type { VariableData } from '@/types'
+import type { ArrayData, ListVariableData, VariableData } from '@/types'
 import { useEntryId, useParam } from '@/internal/hooks'
 import { ProjectContext, ObjectContext } from '@/internal/contexts'
 
 export interface VariableProps extends Partial<Omit<VariableData, 'name' | 'value'>> {
   name: string
   value: unknown
+}
+
+export interface ListProps extends Partial<Omit<ListVariableData, 'name' | 'array'>> {
+  name: string
+  array: ArrayData[]
 }
 
 /**
@@ -55,6 +60,64 @@ export function Variable({
     isCloud,
     isRealTime,
     cloudDate,
+  }
+
+  useParam(project.variables, { value: variable })
+
+  return null
+}
+
+/**
+ * `<Project>` 또는 `<SpriteObject>`, `<TextBoxObject>` 컴포넌트 내부에 리스트를 정의합니다.
+ * `<SpriteObject>`, `<TextBoxObject>` 내부에 있는 경우 개인 리스트로 설정됩니다.
+ * 이 컴포넌트는 `<Project>`의 자식으로 사용해야 합니다.
+ * @example
+ * const project = jsxToProject(
+ *   <Project name='멋진 작품'>
+ *     <List name='전역 리스트' array={['모든 곳에서 액세스 가능']} />
+ *     <Scene name='장면 1'>
+ *       <SpriteObject name='엔트리봇'>
+ *         <List name='개인 리스트' array={['엔트리봇만 액세스 가능']} />
+ *       </SpriteObject>
+ *     </Scene>
+ *   </Project>
+ * )
+ */
+export function List({
+  id,
+  name,
+  array,
+  visible = false,
+  x = 0,
+  y = 0,
+  isCloud = false,
+  isRealTime = false,
+  cloudDate = false,
+  width,
+  height,
+}: ListProps) {
+  const project = useContext(ProjectContext)
+  if (!project) throw TypeError('<Variable> 컴포넌트는 <Project> 내부에서 사용해야 합니다.')
+
+  const object = useContext(ObjectContext)
+
+  const defaultId = useEntryId()
+  id ??= defaultId
+
+  const variable: ListVariableData = {
+    id,
+    variableType: 'list',
+    name,
+    array,
+    visible,
+    object: object?.id || null,
+    x,
+    y,
+    isCloud,
+    isRealTime,
+    cloudDate,
+    width,
+    height,
   }
 
   useParam(project.variables, { value: variable })

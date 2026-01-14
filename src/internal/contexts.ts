@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { ObjectData, ProjectData, ScriptData } from '@/types'
+import type { FunctionData, ObjectData, ProjectData, BlockData } from '@/types'
 
 /**
  * 이 컨텍스트는 `jsxToProject()` 내부 구현을 위해서 사용됩니다.
@@ -26,13 +26,19 @@ export const SceneContext = createContext<string | null>(null)
 export const ObjectContext = createContext<ObjectData | null>(null)
 
 /**
- * 이 컨텍스트는 `<SpriteObject>`, `<TextBoxObject>`, `<Script>` 등 여러 statement 배열을 참조하는 데 사용됩니다.
+ * 이 컨텍스트는 `<SpriteObject>`, `<TextBoxObject>`, `<Block>` 등 여러 statement 배열을 참조하는 데 사용됩니다.
  * @private
  */
-export const ScriptContext = createContext<ScriptData[][] | null>(null)
+export const ScriptContext = createContext<BlockData[][] | null>(null)
 
 /**
- * 이 컨텍스트는 `<Statement>`, `<Script>` 등 특정 파라미터를 넣을 수 있는 배열을 참조하는 데 사용됩니다.
+ * 이 컨텍스트는 `<Statement>`, `<Block>` 등 특정 파라미터를 넣을 수 있는 배열을 참조하는 데 사용됩니다.
  * @private
  */
 export const ParamsContext = createContext<unknown[] | null>(null)
+
+/**
+ * 이 컨텍스트는 `<NormalFunc>`, `<ValueFunc>` 컴포넌트의 함수 객체를 참조하는 데 사용됩니다.
+ * @private
+ */
+export const FunctionContext = createContext<FunctionData | null>(null)

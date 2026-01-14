@@ -4,7 +4,7 @@ export interface BaseVariableData {
   id: string
   variableType: VariableType
   name: string
-  value: unknown
+  value?: unknown
   visible: boolean
   x: number
   y: number
@@ -19,6 +19,7 @@ export interface VariableData extends BaseVariableData {
 }
 
 export interface ListVariableData extends BaseVariableData {
+  variableType: 'list'
   array: ArrayData[]
   width?: number
   height?: number

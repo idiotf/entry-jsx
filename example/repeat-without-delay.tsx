@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import {
   SpriteObject,
   jsxToProject,
@@ -7,7 +7,7 @@ import {
   Scene,
   Sound,
   Statement,
-  Script,
+  Block,
   Param,
 } from '@/.'
 
@@ -51,21 +51,19 @@ function Main() {
           />
 
           <Statement>
-            <Script type='when_run_button_click' />
-            <Script type='repeat_basic'>
+            <Block type='when_run_button_click' />
+            <Block type='repeat_basic'>
               <Param value={10} />
               <Statement>
-                <Script type='move_direction'>
+                <Block type='move_direction'>
                   <Param value={10} />
-                </Script>
-                <Script type='wait_until_true'>
-                  <Script type='boolean_not'>
-                    <Param />
-                    <Script type='continue_repeat' />
-                  </Script>
-                </Script>
+                </Block>
+                <Block type='Talebot_Move'>
+                  <Param />
+                  <Block type='continue_repeat' />
+                </Block>
               </Statement>
-            </Script>
+            </Block>
           </Statement>
         </SpriteObject>
       </Scene>

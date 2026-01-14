@@ -1,29 +1,29 @@
 import React, { useContext } from 'react'
-import type { ScriptData } from '@/types'
+import type { BlockData } from '@/types'
 import { useEntryId, useParam } from '@/internal/hooks'
 import { ParamsContext, ScriptContext } from '@/internal/contexts'
 
-export interface ScriptProps extends React.PropsWithChildren<Partial<Omit<ScriptData, 'type'>>> {
+export interface BlockProps extends React.PropsWithChildren<Partial<Omit<BlockData, 'type'>>> {
   type: string
 }
 
 /**
- * `<Statement>` 컴포넌트 내부에 스크립트를 정의합니다. 이 컴포넌트는 `<Statement>`의 자식으로 사용해야 합니다.
+ * `<Statement>` 컴포넌트 내부에 블록을 정의합니다. 이 컴포넌트는 `<Statement>`의 자식으로 사용해야 합니다.
  * @example
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
  *       <SpriteObject name='엔트리봇'>
  *         <Statement>
- *           <Script type='when_run_button_click' />
- *           <Script type='show' />
+ *           <Block type='when_run_button_click' />
+ *           <Block type='show' />
  *         </Statement>
  *       </SpriteObject>
  *     </Scene>
  *   </Project>
  * )
  */
-export function Script({
+export function Block({
   id,
   type,
   x = 0,
@@ -36,14 +36,14 @@ export function Script({
   readOnly = null,
   extensions = [],
   children,
-}: ScriptProps) {
+}: BlockProps) {
   const params = useContext(ParamsContext)
-  if (!params) throw TypeError('<Script> 컴포넌트는 <Script> 또는 <Statement> 내부에서 사용해야 합니다.')
+  if (!params) throw TypeError('<Block> 컴포넌트는 <Block> 또는 <Statement> 내부에서 사용해야 합니다.')
 
   const defaultId = useEntryId()
   id ??= defaultId
 
-  const script: ScriptData = {
+  const block: BlockData = {
     id,
     type,
     params: [],
@@ -59,11 +59,11 @@ export function Script({
     extensions,
   }
 
-  useParam(params, { value: script })
+  useParam(params, { value: block })
 
   return (
-    <ScriptContext.Provider value={script.statements}>
-      <ParamsContext.Provider value={script.params}>
+    <ScriptContext.Provider value={block.statements}>
+      <ParamsContext.Provider value={block.params}>
         {children}
       </ParamsContext.Provider>
     </ScriptContext.Provider>
@@ -71,19 +71,24 @@ export function Script({
 }
 
 /**
- * `<SpriteObject>`, `<TextBoxObject>` 또는 `<Script>` 컴포넌트 내부에서 단일 스크립트 statement를 정의합니다.
- * 이 컴포넌트는 `<SpriteObject>`, `<TextBoxObject>` 또는 `<Script>`의 자식으로 사용해야 합니다.
+ * @deprecated 이 컴포넌트는 `<Block>`으로 이름이 변경되었습니다. 대신 `<Block>` 컴포넌트를 사용해 주세요.
+ */
+export const Script = Block
+
+/**
+ * `<SpriteObject>`, `<TextBoxObject>` 또는 `<Block>` 컴포넌트 내부에서 단일 스크립트 statement를 정의합니다.
+ * 이 컴포넌트는 `<SpriteObject>`, `<TextBoxObject>` 또는 `<Block>`의 자식으로 사용해야 합니다.
  * @example
  * const project = jsxToProject(
  *   <Project name='멋진 작품'>
  *     <Scene name='장면 1'>
  *       <SpriteObject name='엔트리봇'>
  *         <Statement>
- *           <Script type='_if'>
+ *           <Block type='_if'>
  *             <Statement>
- *               <Script type='show' />
+ *               <Block type='show' />
  *             </Statement>
- *           </Script>
+ *           </Block>
  *         </Statement>
  *       </SpriteObject>
  *     </Scene>
@@ -91,12 +96,12 @@ export function Script({
  * )
  */
 export function Statement({ children }: React.PropsWithChildren) {
-  const script = useContext(ScriptContext)
-  if (!script) throw TypeError('<Statement> 컴포넌트는 <Script> 또는 <SpriteObject>, <TextBoxObject> 내부에서 사용해야 합니다.')
+  const block = useContext(ScriptContext)
+  if (!block) throw TypeError('<Statement> 컴포넌트는 <SpriteObject>, <TextBoxObject> 또는 <Block> 내부에서 사용해야 합니다.')
 
-  const statement: ScriptData[] = []
+  const statement: BlockData[] = []
 
-  useParam(script, { value: statement })
+  useParam(block, { value: statement })
 
   return (
     <ParamsContext.Provider value={statement}>

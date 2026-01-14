@@ -11,7 +11,7 @@ import {
 import type {
   ObjectType,
   RotateMethod,
-  ScriptData,
+  BlockData,
   ObjectData,
   PictureData,
   SoundData,
@@ -81,7 +81,7 @@ export function SpriteObject({
   const defaultId = useEntryId()
   id ??= defaultId
 
-  const script: ScriptData[][] = []
+  const script: BlockData[][] = []
   const object: ObjectData = {
     id,
     name,
@@ -184,7 +184,7 @@ export function TextBoxObject({
   const defaultId = useEntryId()
   id ??= defaultId
 
-  const script: ScriptData[][] = []
+  const script: BlockData[][] = []
   const object: ObjectData = {
     id,
     name,
