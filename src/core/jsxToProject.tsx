@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { RootProjectContext } from '@/internal/contexts'
-import type { ProjectData } from '@/types'
+import { RootProjectContext } from '../internal/contexts'
+import type { ProjectData } from '../types'
 
 /**
  * JSX를 Project 객체로 변환해 줍니다.

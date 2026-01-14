@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import { useEntryId, useParam } from '@/internal/hooks'
-import { FunctionContext, ProjectContext, ScriptContext } from '@/internal/contexts'
-import type { BlockData, FunctionData } from '@/types'
+import { useEntryId, useParam } from '../internal/hooks'
+import { FunctionContext, ProjectContext, ScriptContext } from '../internal/contexts'
+import type { BlockData, FunctionData } from '../types'
 
 export function NormalFunc({ id, children }: React.PropsWithChildren<{
   id: string

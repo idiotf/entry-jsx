@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import generateHash from '@/utils/hash'
+import generateHash from '../utils/hash'
 
 /**
  * 정해진 길이로 만들어진 무작위 id를 리턴하는 hook입니다.

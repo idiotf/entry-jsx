@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { useEntryId, useParam } from '@/internal/hooks'
-import { ProjectContext } from '@/internal/contexts'
+import { useEntryId, useParam } from '../internal/hooks'
+import { ProjectContext } from '../internal/contexts'
 
 export interface MessageProps {
   id?: string

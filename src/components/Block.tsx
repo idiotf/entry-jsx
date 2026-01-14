@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import type { BlockData } from '@/types'
-import { useEntryId, useParam } from '@/internal/hooks'
-import { ParamsContext, ScriptContext } from '@/internal/contexts'
+import type { BlockData } from '../types'
+import { useEntryId, useParam } from '../internal/hooks'
+import { ParamsContext, ScriptContext } from '../internal/contexts'
 
 export interface BlockProps extends React.PropsWithChildren<Partial<Omit<BlockData, 'type'>>> {
   type: string

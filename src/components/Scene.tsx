@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { useEntryId, useParam } from '@/internal/hooks'
-import { ProjectContext, SceneContext } from '@/internal/contexts'
+import { useEntryId, useParam } from '../internal/hooks'
+import { ProjectContext, SceneContext } from '../internal/contexts'
 
 export type SceneProps = React.PropsWithChildren<{
   id?: string

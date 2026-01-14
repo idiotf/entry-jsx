@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
-import { useEntryId, useParam } from '@/internal/hooks'
+import { useEntryId, useParam } from '../internal/hooks'
 
 import {
   SceneContext,
   ProjectContext,
   ObjectContext,
   ScriptContext,
-} from '@/internal/contexts'
+} from '../internal/contexts'
 
 import type {
   ObjectType,
@@ -15,7 +15,7 @@ import type {
   ObjectData,
   PictureData,
   SoundData,
-} from '@/types'
+} from '../types'
 
 export interface SpriteObjectProps {
   id?: string

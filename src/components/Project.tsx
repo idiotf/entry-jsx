@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { RootProjectContext, ProjectContext } from '@/internal/contexts'
-import type { ProjectData } from '@/types'
+import { RootProjectContext, ProjectContext } from '../internal/contexts'
+import type { ProjectData } from '../types'
 
 export type ProjectProps = React.PropsWithChildren<{
   name?: string

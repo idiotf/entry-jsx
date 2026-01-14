@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { FunctionData, ObjectData, ProjectData, BlockData } from '@/types'
+import type { FunctionData, ObjectData, ProjectData, BlockData } from '../types'
 
 /**
  * 이 컨텍스트는 `jsxToProject()` 내부 구현을 위해서 사용됩니다.
